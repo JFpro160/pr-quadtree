@@ -15,6 +15,8 @@ El proyecto tiene la siguiente estructura de archivos:
 
 ## Compilación
 
+### En Ubuntu
+
 Para compilar el proyecto en un sistema basado en Ubuntu, primero asegúrate de tener instalada la librería SFML:
 
 ```bash
@@ -25,6 +27,38 @@ Luego, puedes compilar el proyecto con el siguiente comando en la terminal:
 
 ```bash
 g++ -o QuadTreeDemo main.cpp QuadTree.cpp -lsfml-graphics -lsfml-window -lsfml-system
+```
+
+### En Windows
+
+Para compilar el proyecto en Windows, sigue estos pasos:
+
+1. **Instalar SFML en Windows:**
+   - Descarga la librería SFML desde [SFML Downloads](https://www.sfml-dev.org/download.php).
+   - Elige la versión adecuada para tu compilador (por ejemplo, MinGW o Visual Studio).
+
+2. **Compilación con MinGW:**
+   Si usas MinGW, el proceso es similar al de Ubuntu, pero debes especificar las rutas a las librerías SFML. Suponiendo que tienes SFML instalado en `C:\SFML`, el comando sería:
+
+   ```bash
+   g++ -o QuadTreeDemo main.cpp QuadTree.cpp -I C:\SFML\include -L C:\SFML\lib -lsfml-graphics -lsfml-window -lsfml-system
+   ```
+
+   Esto le indica al compilador que busque los archivos de cabecera en `C:\SFML\include` y las librerías en `C:\SFML\lib`.
+
+3. **Compilación con Visual Studio:**
+   Si prefieres usar Visual Studio:
+   - Abre Visual Studio y crea un nuevo proyecto de consola en C++.
+   - Agrega los archivos `main.cpp`, `QuadTree.cpp`, y `QuadTree.h` al proyecto.
+   - Configura las propiedades del proyecto:
+     - `C++ -> General -> Additional Include Directories`: Agrega la carpeta `include` de SFML.
+     - `Linker -> General -> Additional Library Directories`: Agrega la carpeta `lib` de SFML.
+     - `Linker -> Input -> Additional Dependencies`: Agrega las librerías `sfml-graphics.lib`, `sfml-window.lib` y `sfml-system.lib`.
+
+Después de compilar, el archivo `QuadTreeDemo.exe` debería estar disponible en tu directorio actual, y puedes ejecutarlo con:
+
+```bash
+./QuadTreeDemo.exe
 ```
 
 ### Controles
