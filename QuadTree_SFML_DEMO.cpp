@@ -47,8 +47,8 @@ QuadTree::QuadTree(const Rect &_bound, unsigned _capacity, unsigned _maxLevel) :
     shape.setSize(sf::Vector2f((float)bounds.width - shape.getOutlineThickness(), (float)bounds.height));
     shape.setOutlineColor(sf::Color::White);  // Cambié el borde a blanco para resaltar en fondo oscuro
     shape.setPosition((float)_bound.x, (float)_bound.y);
-    shape.setFillColor(sf::Color(50, 50, 50));  // Fondo gris oscuro
-    text.setFillColor(sf::Color(200, 200, 200));  // Texto en gris claro
+    shape.setFillColor(sf::Color(20, 20, 20));  // Fondo gris oscuro
+    text.setFillColor(sf::Color(230, 230, 230));  // Texto en gris claro
 }
 
 // Inserts an object into this quadtree
@@ -154,9 +154,9 @@ void QuadTree::draw(sf::RenderTarget &canvas) noexcept {
     setFont(*text.getFont());
 
     if (!objects.empty())
-        shape.setFillColor(sf::Color(80, 80, 80));  // Fondo gris más oscuro cuando hay objetos
+        shape.setFillColor(sf::Color(10, 10, 10));  // Fondo gris más oscuro cuando hay objetos
     else
-        shape.setFillColor(sf::Color(50, 50, 50));  // Fondo gris oscuro sin objetos
+        shape.setFillColor(sf::Color(40, 40, 40));  // Fondo gris oscuro sin objetos
 
     canvas.draw(shape);
     if (!isLeaf) {

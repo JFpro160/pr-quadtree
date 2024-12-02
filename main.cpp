@@ -36,7 +36,7 @@ int main() {
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(false);
 
-    QuadTree map = QuadTree(MAP_BOUNDS, 2, 12); // bounds, capacity, maxLevel
+    QuadTree map = QuadTree(MAP_BOUNDS, 2, 15); // bounds, capacity, maxLevel
     std::vector<Object*> objects;
 
     // Cargar una fuente moderna
@@ -109,10 +109,10 @@ int main() {
         unsigned long long qtCollisionChecks = 0;
         unsigned long long bfCollisionChecks = 0;
     for (auto&& obj : objects) {
-      obj->shape.setFillColor(sf::Color(220, 220, 220));  // Paneles claros en gris claro
+      obj->shape.setFillColor(sf::Color(240, 240, 240));  // Paneles claros en gris claro
 
       if (mouseBoundary.intersects(obj->item.bound)) {
-        obj->shape.setFillColor(sf::Color(200, 200, 200));  // Paneles en colisión en gris más claro
+        obj->shape.setFillColor(sf::Color(255, 255, 255));  // Paneles en colisión en blanco
         mouseCollisions.push_back(obj);
         ++collisions;
       }
@@ -122,7 +122,7 @@ int main() {
         ++qtCollisionChecks;
         if (&obj->item != found && found->bound.intersects(obj->item.bound)) {
           ++collisions;
-          obj->shape.setFillColor(sf::Color(200, 200, 200));  // Resaltar los paneles en colisión con gris claro
+          obj->shape.setFillColor(sf::Color(255, 255, 255));  // Resaltar los paneles en colisión con blanco
         }
       }
       if (!freezeObjects) {
@@ -158,13 +158,9 @@ int main() {
 
         // Mostrar información de depuración del quadtree
         std::stringstream ss;
-        ss << "Hijos Totales: "                 << map.totalChildren()
-           << "\nObjetos Totales: "                << map.totalObjects()
-           << "\nColisiones Totales: "             << collisions
-           << "\nCollision Checks QuadTree: "    << qtCollisionChecks
-           << "\nCollision Checks Fuerza Bruta: " << bfCollisionChecks
-           << "\nColisiones con el Mouse: "        << mouseCollisions.size()
-           << "\nObjetos en este quad: "         << map.getLeaf(mouseBoundary)->totalObjects();
+        ss << "Cuadrantes: "                 << map.totalChildren()
+           << "\nPuntos Totales: "                << map.totalObjects()
+           << "\nPuntos Aqui: "         << map.getLeaf(mouseBoundary)->totalObjects();
         info.setString(ss.str());
         textBox.setSize(sf::Vector2f(info.getLocalBounds().width + 20, info.getLocalBounds().height + 20));  // Espacio adicional alrededor del texto
         window.draw(textBox);
