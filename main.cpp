@@ -5,7 +5,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <sstream>
-#include "QuadTree_SFML_DEMO.h"
+#include "QuadTree.h"
 
 Rect MAP_BOUNDS = { 0, 0, 1920, 1020 }; // 1280, 720
 
@@ -39,40 +39,37 @@ int main() {
     QuadTree map = QuadTree(MAP_BOUNDS, 2, 15); // bounds, capacity, maxLevel
     std::vector<Object*> objects;
 
-    // Cargar una fuente moderna
+    
     sf::Font font;
-    if (!font.loadFromFile("Roboto-Regular.ttf")) { // Cambia a la fuente deseada
-        return -1; // Si no se carga la fuente, salir del programa
+    if (!font.loadFromFile("Roboto-Regular.ttf")) {
+        return -1; 
     }
     map.setFont(font);
 
-    // Crear el texto de información con un tamaño y color más atractivo
     sf::Text info("", font);
-    info.setCharacterSize(22);  // Tamaño de fuente mayor
-    info.setFillColor(sf::Color::Black); // Texto negro para buena visibilidad
-    info.setStyle(sf::Text::Bold); // Texto en negrita
+    info.setCharacterSize(22);
+    info.setFillColor(sf::Color::Black);
+    info.setStyle(sf::Text::Bold); 
     info.setPosition(sf::Vector2f(10, 10));
 
-    // Cuadro para el texto con fondo más transparente
     sf::RectangleShape textBox;
-    textBox.setFillColor(sf::Color(255, 255, 255, 180)); // Fondo blanco con algo de transparencia
+    textBox.setFillColor(sf::Color(255, 255, 255, 180));
     textBox.setOutlineThickness(2.0f);
     textBox.setOutlineColor(sf::Color::Black);
 
     sf::Event event;
     sf::RectangleShape mouseBox;
     mouseBox.setOutlineThickness(3.0f);
-    mouseBox.setFillColor(sf::Color(0, 255, 255, 128)); // Color de relleno más claro y semitransparente
+    mouseBox.setFillColor(sf::Color(0, 255, 255, 128)); 
     mouseBox.setOutlineColor(sf::Color::Cyan);
 
     bool freezeObjects = false;
     Rect mouseBoundary = { 0, 0, 20, 20 };
 
-    // Temporizador para controlar el intervalo de inserción
     sf::Clock clock;
 
     while (window.isOpen()) {
-        // Actualización de controles
+
         while (window.pollEvent(event) && event.type == sf::Event::KeyPressed) {
             switch (event.key.code) {
             case sf::Keyboard::Escape:
@@ -88,57 +85,43 @@ int main() {
                 objects.clear();
                 break;
             case sf::Keyboard::Up:
-                mouseBoundary.width += 2;
-                mouseBoundary.height += 2;
+                mouseBoundary.width += 8;
+                mouseBoundary.height += 8;
                 break;
             case sf::Keyboard::Down:
-                mouseBoundary.width -= 2;
-                mouseBoundary.height -= 2;
+                mouseBoundary.width -= 8;
+                mouseBoundary.height -= 8;
                 break;
             }
         }
 
-        // **Cambio de fondo**: Mantén el fondo blanco o claro, sin usar el negro.
-        window.clear(sf::Color::White);  // Fondo blanco
+        window.clear();  
 
         map.draw(window);
 
-        // Actualización de colisiones
+
         std::vector<Object*> mouseCollisions;
-        unsigned long long collisions = 0;
-        unsigned long long qtCollisionChecks = 0;
-        unsigned long long bfCollisionChecks = 0;
-    for (auto&& obj : objects) {
-      obj->shape.setFillColor(sf::Color(240, 240, 240));  // Paneles claros en gris claro
 
-      if (mouseBoundary.intersects(obj->item.bound)) {
-        obj->shape.setFillColor(sf::Color(255, 255, 255));  // Paneles en colisión en blanco
-        mouseCollisions.push_back(obj);
-        ++collisions;
-      }
-      for (auto&& otherObj : objects)
-      ++bfCollisionChecks;
-      for (auto&& found : map.getObjectsInBound_unchecked(obj->item.bound)) {
-        ++qtCollisionChecks;
-        if (&obj->item != found && found->bound.intersects(obj->item.bound)) {
-          ++collisions;
-          obj->shape.setFillColor(sf::Color(255, 255, 255));  // Resaltar los paneles en colisión con blanco
+        for (auto&& obj : objects) {
+          obj->shape.setFillColor(sf::Color(255, 255, 255));
+
+          if (mouseBoundary.intersects(obj->item.bound)) {
+            obj->shape.setFillColor(sf::Color(255, 99, 71));  
+            mouseCollisions.push_back(obj);
+          }
+      
+          if (!freezeObjects) {
+            obj->move();
+            map.update(&obj->item);
+          }
+          window.draw(obj->shape);
         }
-      }
-      if (!freezeObjects) {
-        obj->move();
-        map.update(&obj->item);
-      }
-      window.draw(obj->shape);
-    }
 
-        // Actualizar el cuadro del mouse
         mouseBoundary.x = sf::Mouse::getPosition(window).x;
         mouseBoundary.y = sf::Mouse::getPosition(window).y;
         mouseBox.setSize(sf::Vector2f((float)mouseBoundary.width, (float)mouseBoundary.height));
         mouseBox.setPosition((float)mouseBoundary.x, (float)mouseBoundary.y);
-
-        // Clic izquierdo = agregar objetos
+        
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && MAP_BOUNDS.contains(mouseBoundary)) {
             if (clock.getElapsedTime().asSeconds() >= 0.1f) {
                 objects.push_back(new Object(mouseBoundary.getRight(), mouseBoundary.getTop(), 5, 5));
@@ -146,8 +129,7 @@ int main() {
                 clock.restart();
             }
         }
-
-        // Clic derecho = eliminar objetos dentro del cuadro del mouse
+        
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
             for (auto&& obj : mouseCollisions) {
                 objects.erase(std::find(objects.begin(), objects.end(), obj));
@@ -156,7 +138,6 @@ int main() {
             }
         }
 
-        // Mostrar información de depuración del quadtree
         std::stringstream ss;
         ss << "Cuadrantes: "                 << map.totalChildren()
            << "\nPuntos Totales: "                << map.totalObjects()
@@ -169,7 +150,7 @@ int main() {
         window.display();
     }
 
-    // Limpieza
+    
     map.clear();
     for (auto&& obj : objects)
         delete obj;

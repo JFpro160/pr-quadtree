@@ -9,8 +9,8 @@ El proyecto tiene la siguiente estructura de archivos:
 - `arial.ttf`: Archivo de fuente utilizado para la visualización de texto.
 - `main.cpp`: Archivo principal que ejecuta la demo de SFML.
 - `QuadTreeDemo`: Directorio para la demo de SFML.
-- `QuadTree_SFML_DEMO.cpp`: Implementación de la estructura QuadTree con SFML.
-- `QuadTree_SFML_DEMO.h`: Encabezado con las definiciones de las clases y estructuras principales.
+- `QuadTree.cpp`: Implementación de la estructura QuadTree con SFML.
+- `QuadTree.h`: Encabezado con las definiciones de las clases y estructuras principales.
 - `README.md`: Este archivo con la documentación del proyecto.
 
 ## Compilación
@@ -24,7 +24,7 @@ sudo apt-get install libsfml-dev
 Luego, puedes compilar el proyecto con el siguiente comando en la terminal:
 
 ```bash
-g++ -o QuadTreeDemo main.cpp QuadTree_SFML_DEMO.cpp -lsfml-graphics -lsfml-window -lsfml-system
+g++ -o QuadTreeDemo main.cpp QuadTree.cpp -lsfml-graphics -lsfml-window -lsfml-system
 ```
 
 ## Descripción del Proyecto
